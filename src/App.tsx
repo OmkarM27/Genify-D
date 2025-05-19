@@ -3,6 +3,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { UserProvider } from "./context/UserContext";
 import { ToastProvider } from "./context/ToastContext";
 
+
 // Auth Pages
 import SignUp from "./pages/auth/SignUp";
 import Login from "./pages/auth/Login";
