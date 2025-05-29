@@ -1,0 +1,15 @@
+{
+  "useCaseId": "blog-creator",
+  "title": "Blog Creator",
+  "category": "Content Studio",
+  "description": "Craft long-form blog posts tailored for SEO and audience engagement.",
+  "fields": [
+    { "name": "title", "label": "Title", "type": "text", "required": true },
+    { "name": "goal", "label": "Content Goal", "type": "text" },
+    { "name": "audience", "label": "Target Audience", "type": "text" },
+    { "name": "tone", "label": "Tone of Voice", "type": "select", "options": ["Professional", "Casual", "Friendly"] },
+    { "name": "keywords", "label": "Keywords", "type": "text" },
+    { "name": "generate_image", "label": "Generate Image", "type": "toggle" },
+    { "name": "image_description", "label": "Image Description", "type": "text", "show_if": { "generate_image": true } }
+  ]
+}

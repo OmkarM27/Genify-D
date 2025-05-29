@@ -1,247 +1,358 @@
-import { motion } from 'framer-motion';
-import { useUser } from '../../context/UserContext';
-import { useToast } from '../../context/ToastContext';
-import Card, { CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
-import Button from '../../components/ui/Button';
-import { 
-  BarChart3, 
-  TrendingUp, 
-  FileText, 
-  Share2, 
-  MessageSquare, 
-  ArrowUpRight, 
-  Clock, 
-  Sparkles 
-} from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import {
+  Sparkles,
+  Lock,
+  SendHorizonal,
+  Edit3,
+  Calendar,
+  BarChart2,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import clsx from "clsx";
+import { motion } from "framer-motion";
 
-const Dashboard = () => {
-  const { user } = useUser();
-  const { showToast } = useToast();
+const categories = [
+  {
+    title: "Content Studio",
+    description: "Manage AI tools for articles, blogs, and posts.",
+    icon: <Edit3 size={20} />,
+    cta: "+ Generate Content",
+    link: "/hub/content-studio",
+    locked: false,
+  },
+  {
+    title: "Engagement Hub",
+    description: "Plan and run outreach or campaigns.",
+    icon: <Calendar size={20} />,
+    cta: "+ Launch Campaign",
+    link: "/hub/engagement",
+    locked: false,
+  },
+  {
+    title: "SEO & Blogs",
+    description: "Optimize content with SEO workflows.",
+    icon: <BarChart2 size={20} />,
+    cta: "Coming Soon",
+    locked: true,
+  },
+];
 
-  const handleAction = (action: string) => {
-    showToast(`${action} clicked`, 'info');
-  };
+const suggestions = [
+  "Write a blog",
+  "Schedule post",
+  "Create email",
+  "Generate LinkedIn update",
+];
 
-  // Stats data
-  const stats = [
-    { 
-      label: 'Total Content', 
-      value: '32', 
-      change: '+24%', 
-      icon: <FileText className="h-5 w-5 text-purple-500" />,
-      positive: true 
-    },
-    { 
-      label: 'Social Posts', 
-      value: '18', 
-      change: '+12%', 
-      icon: <Share2 className="h-5 w-5 text-teal-500" />,
-      positive: true
-    },
-    { 
-      label: 'AI Chats', 
-      value: '145', 
-      change: '+32%', 
-      icon: <MessageSquare className="h-5 w-5 text-blue-500" />,
-      positive: true 
-    },
-    { 
-      label: 'Performance', 
-      value: '94%', 
-      change: '-2%', 
-      icon: <BarChart3 className="h-5 w-5 text-amber-500" />,
-      positive: false
-    },
-  ];
+const Dashboard: React.FC = () => {
+  const [showSubtitle, setShowSubtitle] = useState(false);
 
-  // Recent activities data
-  const recentActivities = [
-    {
-      id: 1,
-      title: 'Blog post generated',
-      time: '2 hours ago',
-      type: 'ai-writer',
-    },
-    {
-      id: 2,
-      title: 'Instagram caption created',
-      time: '5 hours ago',
-      type: 'social-tools',
-    },
-    {
-      id: 3,
-      title: 'Project "Q3 Marketing" updated',
-      time: 'Yesterday',
-      type: 'projects',
-    },
-    {
-      id: 4,
-      title: 'Chat with assistant',
-      time: 'Yesterday',
-      type: 'assistant',
-    },
-  ];
+  useEffect(() => {
+    const timer = setTimeout(() => setShowSubtitle(true), 500);
+    return () => clearTimeout(timer);
+  }, []);
 
-  // Quick actions
-  const quickActions = [
-    {
-      title: 'Create a blog post',
-      icon: <FileText className="h-5 w-5" />,
-      path: '/ai-writer',
-      color: 'bg-purple-50 text-purple-600 dark:bg-purple-950 dark:text-purple-400',
-    },
-    {
-      title: 'Generate social content',
-      icon: <Share2 className="h-5 w-5" />,
-      path: '/social-tools',
-      color: 'bg-teal-50 text-teal-600 dark:bg-teal-950 dark:text-teal-400',
-    },
-    {
-      title: 'Chat with assistant',
-      icon: <MessageSquare className="h-5 w-5" />,
-      path: '/assistant',
-      color: 'bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400',
-    },
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const usecaseItems = [
+    { title: "Blog Creator", path: "/usecases/blog", icon: "📝" },
+    { title: "Article Generator", path: "/usecases/article", icon: "📄" },
+    { title: "Email Campaign", path: "/usecases/email", icon: "📧" },
+    { title: "Outreach Manager", path: "/usecases/outreach", icon: "📣" },
+    { title: "Instagram Post", path: "/usecases/instagram", icon: "📸" },
+    { title: "LinkedIn Post", path: "/usecases/linkedin", icon: "🔗" },
+    { title: "YouTube Script", path: "/usecases/youtube", icon: "🎥" },
+    { title: "One-Liner Generator", path: "/usecases/one-liner", icon: "💡" },
   ];
 
   return (
-    <div className="space-y-8">
-      {/* Greeting section */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-bold">
-            Welcome back, {user?.name?.split(' ')[0] || 'User'}
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Here's what's happening with your content today
+    <div className="relative min-h-screen bg-[#0B0B0D] text-white p-6 md:p-10 font-[Inter] overflow-hidden">
+      <style>{`
+        .dashboard-bg::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(circle at bottom right, rgba(120,0,255,0.05), rgba(0,0,0,0.95));
+          z-index: 0;
+          pointer-events: none;
+        }
+
+        .type-underline {
+          animation: blink 1s step-start infinite;
+          font-weight: 700;
+          margin-left: 0.2rem;
+        }
+
+        @keyframes blink {
+          50% { opacity: 0; }
+        }
+
+        .top-shimmer::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 5px;
+          width: 100%;
+          background: linear-gradient(90deg, transparent, rgba(168,85,247,0.3), transparent);
+          animation: shimmer 15s infinite linear;
+        }
+
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+
+        .glass-chip {
+          background: rgba(255,255,255,0.07);
+          border: 1px solid rgba(255,255,255,0.15);
+          backdrop-filter: blur(8px);
+          color: #ccc;
+          padding: 0.5rem 1rem;
+          border-radius: 9999px;
+          transition: all 0.3s ease;
+        }
+
+        .glass-chip:hover {
+          transform: scale(1.05);
+          box-shadow: 0 0 10px rgba(168,85,247,0.2);
+          background: rgba(255,255,255,0.15);
+        }
+      `}</style>
+
+      <div className="absolute inset-0 dashboard-bg pointer-events-none z-0" />
+
+      {/* Top Shimmer */}
+      <div className="top-shimmer absolute inset-x-0 top-0 h-[5px] z-10" />
+
+      {/* Hero Section */}
+      <div className="relative z-10 mb-10">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent inline-block tracking-wide">
+          Hey Tarun<span className="type-underline">|</span>
+        </h1>
+        {showSubtitle && (
+          <p className="text-sm text-gray-400 mt-1">
+            How can I help you today?
           </p>
+        )}
+
+        <div className="mt-6 max-w-xl relative">
+          <input
+            type="text"
+            placeholder="Ask Genify anything…"
+            className="w-full px-4 py-3 rounded-xl backdrop-blur-lg bg-white/10 text-white placeholder-gray-300 border border-white/20 shadow-inner focus:ring-2 focus:ring-purple-600"
+          />
+          <button className="absolute right-3 top-2.5 p-2 rounded-full bg-purple-600 hover:scale-110 hover:shadow-[0_0_10px_2px_rgba(168,85,247,0.5)] transition-all duration-150">
+            <SendHorizonal size={16} />
+          </button>
         </div>
-        <Button 
-          variant="primary"
-          leftIcon={<Sparkles size={16} />}
-          onClick={() => handleAction('Create Content')}
-        >
-          Create Content
-        </Button>
+
+        <div className="flex flex-wrap mt-4 gap-2">
+          {suggestions.map((sug, i) => (
+            <motion.button
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="glass-chip"
+            >
+              {sug}
+            </motion.button>
+          ))}
+        </div>
       </div>
 
-      {/* Stats section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => (
+      {/* Categories Section */}
+      <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {categories.map(
+          ({ title, description, icon, cta, link, locked }, idx) => (
+            <div
+              key={idx}
+              className={clsx(
+                "group p-6 rounded-2xl backdrop-blur-xl transition transform hover:scale-[1.015]",
+                locked
+                  ? "bg-white/5 border border-white/10 opacity-50 blur-sm cursor-not-allowed"
+                  : "bg-white/5 border border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+              )}
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-3 rounded-full bg-gradient-to-br from-purple-600 to-pink-500 text-white group-hover:shadow-[0_0_10px_rgba(168,85,247,0.4)] transition">
+                  {locked ? (
+                    <Lock size={20} title="Launching in June — stay tuned." />
+                  ) : (
+                    icon
+                  )}
+                </div>
+                <h2 className="text-lg font-semibold">{title}</h2>
+              </div>
+              <p className="text-sm text-gray-400 mb-4">{description}</p>
+
+              {locked ? (
+                <div className="text-sm text-gray-400">Coming Soon</div>
+              ) : (
+                <Link
+                  to={link}
+                  className="block w-full text-center py-2 bg-white/10 hover:bg-purple-600/60 backdrop-blur-md text-white rounded-full font-medium transition"
+                >
+                  {cta}
+                </Link>
+              )}
+            </div>
+          )
+        )}
+      </div>
+
+      {/* Usecases Section */}
+      <div className="mt-14">
+        <motion.h2
+  className="text-xl font-semibold mb-6 flex justify-between items-center"
+  initial={{ opacity: 0, y: 20 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5 }}
+>
+  <span className="flex items-center">
+    Usecases<span className="ml-2 text-purple-500 animate-pulse">●</span>
+  </span>
+  <button
+    onClick={() => setIsModalOpen(true)}
+    className="text-sm bg-white/10 hover:bg-purple-600/60 px-3 py-1.5 rounded-full backdrop-blur-md text-purple-300 hover:text-white transition font-medium"
+  >
+    Show All
+  </button>
+</motion.h2>
+
+        
+
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: { staggerChildren: 0.15 },
+            },
+          }}
+        >
+          {[
+            {
+              title: "Instagram Post",
+              description:
+                "Create short-form content with hashtags and engaging tone.",
+              icon: "📸",
+              action: "Write Now",
+            },
+            {
+              title: "Email Pitch",
+              description: "Generate personalized outreach messages for leads.",
+              icon: "✉️",
+              action: "Write Now",
+            },
+            {
+              title: "LinkedIn Update",
+              description:
+                "Craft a business post with CTA to boost engagement.",
+              icon: "🔗",
+              action: "Preview",
+            },
+          ].map((usecase, i) => (
+            <motion.div
+              key={i}
+              className="p-5 rounded-2xl border border-white/10 bg-[#111] hover:bg-[#151515] transition shadow-lg relative"
+              whileHover={{ scale: 1.015 }}
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0 },
+              }}
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="text-lg bg-gradient-to-br from-purple-500 to-indigo-500 p-2 px-3 rounded-full shadow-sm">
+                  {usecase.icon}
+                </div>
+                <h3 className="text-md font-semibold">{usecase.title}</h3>
+              </div>
+              <p className="text-sm text-gray-400">{usecase.description}</p>
+              <button className="absolute bottom-4 right-4 text-sm text-purple-400 hover:text-purple-300 hover:underline transition">
+                {usecase.action}
+              </button>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 z-[999] bg-black/60 backdrop-blur-md flex items-center justify-center p-6"
+          onClick={() => setIsModalOpen(false)}
+        >
           <motion.div
-            key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
+            initial={{ y: 40, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 20, opacity: 0 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-[rgba(20,20,30,0.8)] backdrop-blur-xl rounded-2xl p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto relative shadow-xl"
           >
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      {stat.label}
-                    </p>
-                    <p className="text-2xl font-bold mt-1">
-                      {stat.value}
-                    </p>
-                  </div>
-                  <div className="p-2 rounded-md bg-gray-100 dark:bg-gray-700">
-                    {stat.icon}
-                  </div>
-                </div>
-                <div className="mt-4 flex items-center">
-                  <span className={`text-xs font-medium ${
-                    stat.positive ? 'text-green-600 dark:text-green-400' : 'text-rose-600 dark:text-rose-400'
-                  }`}>
-                    {stat.change}
-                  </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">
-                    vs last week
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
+            <button
+              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+              onClick={() => setIsModalOpen(false)}
+            >
+              <span className="text-lg">×</span>
+            </button>
+            <h3 className="text-xl font-semibold mb-4 text-white">
+              All Usecases
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {usecaseItems.map((item, idx) => (
+                <Link
+                  key={idx}
+                  to={item.path}
+                  className="flex items-center gap-3 p-4 bg-white/10 hover:bg-purple-600/20 rounded-xl transition transform hover:scale-[1.02] text-white"
+                >
+                  <span className="text-xl">{item.icon}</span>
+                  <span className="font-medium">{item.title}</span>
+                </Link>
+              ))}
+            </div>
           </motion.div>
+        </div>
+      )}
+      {isModalOpen && (
+  <div
+    className="fixed inset-0 z-[999] bg-black/60 backdrop-blur-md flex items-center justify-center p-6"
+    onClick={() => setIsModalOpen(false)}
+  >
+    <motion.div
+      initial={{ y: 40, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: 20, opacity: 0 }}
+      onClick={(e) => e.stopPropagation()}
+      className="bg-[rgba(20,20,30,0.8)] backdrop-blur-xl rounded-2xl p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto relative shadow-xl"
+    >
+      <button
+        className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl"
+        onClick={() => setIsModalOpen(false)}
+      >
+        ✕
+      </button>
+      <h3 className="text-xl font-semibold mb-4 text-white">
+        All Usecases
+      </h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {usecaseItems.map((item, idx) => (
+          <Link
+            key={idx}
+            to={item.path}
+            className="flex items-center gap-3 p-4 bg-white/10 hover:bg-purple-600/20 rounded-xl transition transform hover:scale-[1.02] text-white"
+          >
+            <span className="text-xl">{item.icon}</span>
+            <span className="font-medium">{item.title}</span>
+          </Link>
         ))}
       </div>
+    </motion.div>
+  </div>
+)}
 
-      {/* Main content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Quick actions */}
-        <Card className="lg:col-span-1">
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {quickActions.map((action, index) => (
-                <motion.div
-                  key={action.title}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                >
-                  <button
-                    onClick={() => handleAction(action.title)}
-                    className="w-full flex items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                  >
-                    <div className="flex items-center">
-                      <div className={`p-2 rounded-md mr-3 ${action.color}`}>
-                        {action.icon}
-                      </div>
-                      <span className="font-medium">{action.title}</span>
-                    </div>
-                    <ArrowUpRight size={16} className="text-gray-400" />
-                  </button>
-                </motion.div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Recent activities */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {recentActivities.map((activity, index) => (
-                <motion.div
-                  key={activity.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="flex items-start pb-4 last:pb-0 last:border-0 border-b border-gray-200 dark:border-gray-700"
-                >
-                  <div className="mr-4">
-                    <div className="p-2 rounded-full bg-gray-100 dark:bg-gray-700">
-                      {activity.type === 'ai-writer' && <FileText size={16} />}
-                      {activity.type === 'social-tools' && <Share2 size={16} />}
-                      {activity.type === 'projects' && <TrendingUp size={16} />}
-                      {activity.type === 'assistant' && <MessageSquare size={16} />}
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-medium">{activity.title}</p>
-                    <div className="flex items-center mt-1 text-sm text-gray-500 dark:text-gray-400">
-                      <Clock size={14} className="mr-1" />
-                      {activity.time}
-                    </div>
-                  </div>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => handleAction(`View ${activity.title}`)}
-                  >
-                    View
-                  </Button>
-                </motion.div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
     </div>
   );
 };
