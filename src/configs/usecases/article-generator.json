@@ -1,46 +1,47 @@
-{
-  "title": "Article Generator",
-  "description": "Generate informative, engaging articles for blogs, reports, and publications using Genify AI.",
-  "fields": [
+// src/configs/usecases/article-generator.js
+export default {
+  title: "Article Generator",
+  description: "Generate informative, engaging articles for blogs, reports, and publications using Genify AI.",
+  fields: [
     {
-      "label": "Article Topic",
-      "name": "topic",
-      "type": "text",
-      "placeholder": "e.g., How AI is transforming education",
-      "required": true
+      label: "Article Topic",
+      name: "topic",
+      type: "text",
+      placeholder: "e.g., How AI is transforming education",
+      required: true
     },
     {
-      "label": "Article Goal",
-      "name": "goal",
-      "type": "text",
-      "placeholder": "e.g., Explain AI's impact on students"
+      label: "Article Goal",
+      name: "goal",
+      type: "text",
+      placeholder: "e.g., Explain AI's impact on students"
     },
     {
-      "label": "Target Audience",
-      "name": "audience",
-      "type": "text",
-      "placeholder": "e.g., Educators, policymakers"
+      label: "Target Audience",
+      name: "audience",
+      type: "text",
+      placeholder: "e.g., Educators, policymakers"
     },
     {
-      "label": "Important Keywords",
-      "name": "keywords",
-      "type": "text",
-      "placeholder": "e.g., AI, adaptive learning"
+      label: "Important Keywords",
+      name: "keywords",
+      type: "text",
+      placeholder: "e.g., AI, adaptive learning"
     },
     {
-      "label": "Tone of Voice",
-      "name": "tone",
-      "type": "select",
-      "options": ["Neutral", "Professional", "Conversational", "Informative"],
-      "placeholder": "Select tone..."
+      label: "Tone of Voice",
+      name: "tone",
+      type: "select",
+      options: ["Neutral", "Professional", "Conversational", "Informative"],
+      placeholder: "Select tone..."
     },
     {
-      "label": "Content Style/Depth",
-      "name": "length",
-      "type": "select",
-      "options": ["Short", "Medium", "Long"],
-      "placeholder": "Select length"
+      label: "Content Style/Depth",
+      name: "length",
+      type: "select",
+      options: ["Short", "Medium", "Long"],
+      placeholder: "Select length"
     }
   ],
-  "submitButtonLabel": "Generate Article"
-}
+  submitButtonLabel: "Generate Article"
+};
